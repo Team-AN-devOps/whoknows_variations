@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'sinatra'         # Sinatra web framework
+gem 'sinatra-contrib' # Sinatra extensions (for JSON handling, etc.)
+gem 'sqlite3'         # SQLite3 database gem (if you're using a SQLite database)
