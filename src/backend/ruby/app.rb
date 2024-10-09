@@ -36,3 +36,30 @@ end
 after do
   @db.close if @db
 end
+
+# Page Routes (HTML rendering)
+
+# The search page (renders search.html)
+get '/' do
+  q = params['q']
+  language = params['language'] || 'en'
+  search_results = q ? query_db("SELECT * FROM pages WHERE language = ? AND content LIKE ?", language, "%#{q}%") : []
+  erb :search, locals: { search_results: search_results, query: q }
+end
+
+# The about page (renders about.html)
+get '/about' do
+  erb :about
+end
+
+# The login page (renders login.html)
+get '/login' do
+  redirect to('/') if @user
+  erb :login
+end
+
+# The registration page (renders register.html)
+get '/register' do
+  redirect to('/') if @user
+  erb :register
+end
