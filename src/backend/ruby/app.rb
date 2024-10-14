@@ -9,7 +9,8 @@ enable :sessions
 set :session_secret, 'da3259994058f90b0b08ab4650096c506825cd0a38fe40666c0f751e9ab21f5f'  # Replace with a strong, random string
 
 # Set the database path to the existing database
-set :database_path, '/tmp/whoknows.db'
+#set :database_path, '/tmp/whoknows.db'
+set :database_path, '../whoknows.db'
 
 # Connect to the database
 def connect_db
