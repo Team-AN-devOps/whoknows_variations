@@ -24,6 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: bundle install
+        working-directory: src/backend/ruby
 
       - name: Prepare SSH Key
         run: |
