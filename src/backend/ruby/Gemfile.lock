@@ -13,6 +13,9 @@ GEM
       rack (>= 3.0.0, < 4)
     rack-session (2.0.0)
       rack (>= 3.0.0)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
     ruby2_keywords (0.0.5)
     sequel (5.85.0)
       bigdecimal
@@ -33,6 +36,7 @@ GEM
     sqlite3 (2.1.0-x86_64-linux-gnu)
     sqlite3 (2.1.0-x86_64-linux-musl)
     tilt (2.4.0)
+    webrick (1.8.2)
 
 PLATFORMS
   aarch64-linux-gnu
@@ -50,6 +54,7 @@ DEPENDENCIES
   dotenv
   json
   rack
+  rackup
   sequel
   sinatra
   sqlite3
