@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sqlite3'
 require 'digest'
+require 'sinatra/flash'
 
 # Enable sessions
 enable :sessions
@@ -40,12 +41,21 @@ def verify_password(stored_password, input_password)
   stored_password == hash_password(input_password)
 end
 
-# Page Routes
+# Helper method to fetch the current user
+helpers do
+  def current_user
+    return nil unless session[:user_id]
+    
+    db = connect_db
+    db.execute("SELECT * FROM users WHERE id = ?", session[:user_id]).first
+  end
+end
 
+# Page routes
 # Home route (search page)
 get '/' do
   q = params[:q]
-  language = params[:language] || "en"  # Default language is English
+  language = params[:language] || "en"
   db = connect_db
 
   if q.nil? || q.empty?
@@ -55,29 +65,29 @@ get '/' do
     search_results = db.execute("SELECT * FROM pages WHERE language = ? AND content LIKE ?", language, "%#{q}%")
   end
 
-  erb :search, locals: { search_results: search_results, query: q }
+  erb :search, locals: { search_results: search_results, query: q, user: current_user }
 end
 
-# About page route
+# About route
 get '/about' do
-  erb :about
+  erb :about, locals: { user: current_user }
 end
 
-# Login page route
+# login route
 get '/login' do
-  if session[:user_id]  # Check if the user is already logged in
+  if session[:user_id]
     redirect '/'
   else
-    erb :login
+    erb :login, locals: { user: current_user }
   end
 end
 
-# Registration page route
+# register route
 get '/register' do
-  if session[:user_id]  # Check if the user is already logged in
+  if session[:user_id]
     redirect '/'
   else
-    erb :register
+    erb :register, locals: { user: current_user }
   end
 end
 

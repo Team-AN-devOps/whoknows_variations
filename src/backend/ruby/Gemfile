@@ -7,3 +7,4 @@ gem 'rack'            # Rack is a modular Ruby web server interface
 gem 'dotenv'          # For managing environment variables (optional but recommended)
 gem 'json'            # For JSON handling
 gem 'rackup' 
+gem 'sinatra-flash'

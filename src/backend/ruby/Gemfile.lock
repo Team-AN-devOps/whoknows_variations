@@ -4,10 +4,10 @@ GEM
     base64 (0.2.0)
     bigdecimal (3.1.8)
     dotenv (3.1.4)
-    json (2.7.2)
+    json (2.7.3)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    rack (3.1.7)
+    rack (3.1.8)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -25,16 +25,18 @@ GEM
       rack-protection (= 4.0.0)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    sqlite3 (2.1.0-aarch64-linux-gnu)
-    sqlite3 (2.1.0-aarch64-linux-musl)
-    sqlite3 (2.1.0-arm-linux-gnu)
-    sqlite3 (2.1.0-arm-linux-musl)
-    sqlite3 (2.1.0-arm64-darwin)
-    sqlite3 (2.1.0-x86-linux-gnu)
-    sqlite3 (2.1.0-x86-linux-musl)
-    sqlite3 (2.1.0-x86_64-darwin)
-    sqlite3 (2.1.0-x86_64-linux-gnu)
-    sqlite3 (2.1.0-x86_64-linux-musl)
+    sinatra-flash (0.3.0)
+      sinatra (>= 1.0.0)
+    sqlite3 (2.1.1-aarch64-linux-gnu)
+    sqlite3 (2.1.1-aarch64-linux-musl)
+    sqlite3 (2.1.1-arm-linux-gnu)
+    sqlite3 (2.1.1-arm-linux-musl)
+    sqlite3 (2.1.1-arm64-darwin)
+    sqlite3 (2.1.1-x86-linux-gnu)
+    sqlite3 (2.1.1-x86-linux-musl)
+    sqlite3 (2.1.1-x86_64-darwin)
+    sqlite3 (2.1.1-x86_64-linux-gnu)
+    sqlite3 (2.1.1-x86_64-linux-musl)
     tilt (2.4.0)
     webrick (1.8.2)
 
@@ -57,7 +59,8 @@ DEPENDENCIES
   rackup
   sequel
   sinatra
+  sinatra-flash
   sqlite3
 
 BUNDLED WITH
-   2.5.18
+   2.5.22
