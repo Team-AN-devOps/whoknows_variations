@@ -1,0 +1,66 @@
+<!-- views/weather.erb -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+<body>
+<div class="body">
+    <h1>Weather Forecast</h1>
+
+    <p>Enter your location to get the current weather:</p>
+
+    <form id="weather-form">
+        <input type="text" id="location-input" placeholder="Enter location..." required>
+        <button type="submit">Get Weather</button>
+    </form>
+
+    <div id="weather-results"></div>
+
+    <script>
+        document.getElementById('weather-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const location = document.getElementById('location-input').value;
+
+            // Fetch weather data
+            fetchWeather(location);
+        });
+
+        function fetchWeather(location) {
+            fetch(`/api/weather?location=${encodeURIComponent(location)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayWeather(data);
+                })
+                .catch(error => {
+                    document.getElementById('weather-results').innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        }
+
+        function displayWeather(data) {
+            if (data.error) {
+                document.getElementById('weather-results').innerHTML = `<p>${data.error.message}</p>`;
+                return;
+            }
+
+            const { location, current } = data;
+            document.getElementById('weather-results').innerHTML = `
+                <h2>Weather in ${location.name}, ${location.country}</h2>
+                <p>Temperature: ${current.temp_c}°C</p>
+                <p>Condition: ${current.condition.text}</p>
+                <img src="${current.condition.icon}" alt="${current.condition.text}">
+            `;
+        }
+    </script>
+</div>
+</body>
+</html>

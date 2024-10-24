@@ -8,3 +8,5 @@ gem 'dotenv'          # For managing environment variables (optional but recomme
 gem 'json'            # For JSON handling
 gem 'rackup' 
 gem 'sinatra-flash'
+gem 'dotenv', require: 'dotenv/load'
+

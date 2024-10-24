@@ -58,14 +58,35 @@ get '/' do
   language = params[:language] || "en"
   db = connect_db
 
+  puts "Searching for: #{q} in language: #{language}"
+
+  search_results = []
+  message = nil
+
   if q.nil? || q.empty?
-    search_results = []
+    message = "Please enter a search query."
   else
-    # Use parameterized queries to prevent SQL injection
-    search_results = db.execute("SELECT * FROM pages WHERE language = ? AND content LIKE ?", language, "%#{q}%")
+    begin
+      search_results = db.execute(
+        "SELECT * FROM pages WHERE language = ? AND content LIKE ?",
+        language,
+        "%#{q}%"
+      )
+    rescue SQLite3::Exception => e
+      puts "SQLite error: #{e.message}"
+    end
+
+    if search_results.empty?
+      message = "Ingen resultater fundet for '#{q}'"
+    end
   end
 
-  erb :search, locals: { search_results: search_results, query: q, user: current_user }
+  erb :search, locals: { search_results: search_results, query: q, message: message, user: current_user }
+end
+
+# Weather route
+get '/weather' do
+  erb :weather, locals: { user: current_user }
 end
 
 # About route
@@ -92,6 +113,29 @@ get '/register' do
 end
 
 # API Routes
+
+get '/api/weather' do
+  content_type :json  # Set the response content type to JSON
+  location = params[:location]
+
+  # Check if the location parameter is provided
+  if location.nil? || location.empty?
+    status 400  # Bad Request
+    return { error: 'Location parameter is required' }.to_json
+  end
+
+  api_key = ENV['WEATHER_API_KEY']
+  url = URI("https://api.weatherapi.com/v1/current.json?key=#{api_key}&q=#{location}")
+
+  begin
+    response = Net::HTTP.get(url)
+    JSON.parse(response)  # Parse the JSON response
+  rescue StandardError => e
+    status 500  # Internal Server Error
+    { error: "Failed to fetch weather data: #{e.message}" }.to_json
+  end
+end
+
 
 # API endpoint for search
 get '/api/search' do

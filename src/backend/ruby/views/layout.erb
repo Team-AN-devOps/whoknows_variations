@@ -11,6 +11,7 @@
     <div class="navigation">
         <nav>
             <h1><a id="nav-logo" href="/">¿Who Knows?</a></h1>
+            <a id="nav-weather" href="/weather">Weather</a> <!-- Weather Button -->
             <% if user %>  <!-- Use Ruby ERB syntax -->
                 <a id="nav-logout" href="/api/logout">Log out [<%= user['username'] %>]</a>
             <% else %>
