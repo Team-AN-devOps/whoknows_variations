@@ -2,6 +2,21 @@ require 'sinatra'
 require 'sqlite3'
 require 'digest'
 require 'sinatra/flash'
+require 'dotenv/load'  
+require 'redis'
+require 'redis-rack-cache'
+require 'httparty'
+
+
+use Rack::Cache,
+    verbose: true,
+    metastore:   'redis://localhost:6379/0/metastore',
+    entitystore: 'redis://localhost:6379/0/entitystore'
+
+# Helper method for Redis
+def redis
+  @redis ||= Redis.new
+end
 
 # Enable sessions
 enable :sessions
@@ -19,6 +34,9 @@ def connect_db
   db.results_as_hash = true
   db
 end
+
+# Load environment variables
+Dotenv.load('.env')
 
 # Check if the database exists
 def check_db_exists
@@ -84,10 +102,10 @@ get '/' do
   erb :search, locals: { search_results: search_results, query: q, message: message, user: current_user }
 end
 
-# Weather route
 get '/weather' do
   erb :weather, locals: { user: current_user }
 end
+
 
 # About route
 get '/about' do
@@ -112,30 +130,9 @@ get '/register' do
   end
 end
 
-# API Routes
-
-get '/api/weather' do
-  content_type :json  # Set the response content type to JSON
-  location = params[:location]
-
-  # Check if the location parameter is provided
-  if location.nil? || location.empty?
-    status 400  # Bad Request
-    return { error: 'Location parameter is required' }.to_json
-  end
-
-  api_key = ENV['WEATHER_API_KEY']
-  url = URI("https://api.weatherapi.com/v1/current.json?key=#{api_key}&q=#{location}")
-
-  begin
-    response = Net::HTTP.get(url)
-    JSON.parse(response)  # Parse the JSON response
-  rescue StandardError => e
-    status 500  # Internal Server Error
-    { error: "Failed to fetch weather data: #{e.message}" }.to_json
-  end
+def redis
+  @redis ||= Redis.new
 end
-
 
 # API endpoint for search
 get '/api/search' do
@@ -210,4 +207,45 @@ end
 get '/api/logout' do
   session[:user_id] = nil
   { message: 'You were logged out' }.to_json
+end
+
+
+get 'api/weather' do
+  content_type :json
+  lat = params[:lat]
+  lon = params[:lon]
+
+  if lat.nil? || lon.nil?
+    status 400
+    return { error: "Latitude and longitude parameters are required." }.to_json
+  end
+
+  begin
+    cache_key = "weather_#{lat}_#{lon}"
+    cached_weather = redis.get(cache_key)
+
+    if cached_weather
+      @weather = JSON.parse(cached_weather)
+    else
+      api_key = ENV['OPENWEATHER_API_KEY']
+      raise "API key is missing" unless api_key
+
+      url = "https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&units=metric&appid=#{api_key}"
+      response = HTTParty.get(url)
+
+      if response.code == 200
+        @weather = JSON.parse(response.body)
+        redis.set(cache_key, @weather.to_json)
+        redis.expire(cache_key, 1800) # Cache for 30 minutes
+      else
+        status response.code
+        return { error: "Failed to fetch weather data: #{response.message}" }.to_json
+      end
+    end
+
+    @weather.to_json
+  rescue => e
+    status 500
+    { error: "An error occurred: #{e.message}" }.to_json
+  end
 end

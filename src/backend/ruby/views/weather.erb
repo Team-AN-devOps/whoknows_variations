@@ -1,66 +1,102 @@
-<!-- views/weather.erb -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Forecast</title>
-    <link rel="stylesheet" type="text/css" href="/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #87CEFA, #4682B4);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    img {
+      width: 100px;
+      height: 100px;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    p {
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-<div class="body">
-    <h1>Weather Forecast</h1>
+  <div class="container">
+    <h1>Weather</h1>
+    <div id="loading">Fetching your location...</div>
+    <div id="weather-data" style="display: none;">
+      <h1 id="city-name"></h1>
+      <img id="weather-icon" alt="Weather Icon">
+      <p id="temperature"></p>
+      <p id="condition"></p>
+      <p id="humidity"></p>
+    </div>
+    <div id="error-message" style="color: red; display: none;"></div>
+  </div>
 
-    <p>Enter your location to get the current weather:</p>
+  <script>
+    // Function to fetch weather data
+    async function fetchWeather(lat, lon) {
+      try {
+        const response = await fetch(`api/weather?lat=${lat}&lon=${lon}`);
+        const data = await response.json();
 
-    <form id="weather-form">
-        <input type="text" id="location-input" placeholder="Enter location..." required>
-        <button type="submit">Get Weather</button>
-    </form>
-
-    <div id="weather-results"></div>
-
-    <script>
-        document.getElementById('weather-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            const location = document.getElementById('location-input').value;
-
-            // Fetch weather data
-            fetchWeather(location);
-        });
-
-        function fetchWeather(location) {
-            fetch(`/api/weather?location=${encodeURIComponent(location)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displayWeather(data);
-                })
-                .catch(error => {
-                    document.getElementById('weather-results').innerHTML = `<p>Error: ${error.message}</p>`;
-                });
+        if (data.error) {
+          document.getElementById('error-message').textContent = data.error;
+          document.getElementById('error-message').style.display = 'block';
+          document.getElementById('loading').style.display = 'none';
+        } else {
+          document.getElementById('city-name').textContent = `Weather in ${data.name}`;
+          document.getElementById('weather-icon').src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+          document.getElementById('temperature').textContent = `Temperature: ${data.main.temp}°C`;
+          document.getElementById('condition').textContent = `Condition: ${data.weather[0].description}`;
+          document.getElementById('humidity').textContent = `Humidity: ${data.main.humidity}%`;
+          document.getElementById('weather-data').style.display = 'block';
+          document.getElementById('loading').style.display = 'none';
         }
+      } catch (error) {
+        document.getElementById('error-message').textContent = 'Failed to fetch weather data.';
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
 
-        function displayWeather(data) {
-            if (data.error) {
-                document.getElementById('weather-results').innerHTML = `<p>${data.error.message}</p>`;
-                return;
-            }
-
-            const { location, current } = data;
-            document.getElementById('weather-results').innerHTML = `
-                <h2>Weather in ${location.name}, ${location.country}</h2>
-                <p>Temperature: ${current.temp_c}°C</p>
-                <p>Condition: ${current.condition.text}</p>
-                <img src="${current.condition.icon}" alt="${current.condition.text}">
-            `;
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeather(latitude, longitude);
+        },
+        (error) => {
+          let message;
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              message = 'Location access denied by the user.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              message = 'Location information is unavailable.';
+              break;
+            case error.TIMEOUT:
+              message = 'Location request timed out.';
+              break;
+            default:
+              message = 'An unknown error occurred while fetching location.';
+          }
+          document.getElementById('error-message').textContent = message;
+          document.getElementById('error-message').style.display = 'block';
+          document.getElementById('loading').style.display = 'none';
         }
-    </script>
-</div>
+      );      
+  </script>
 </body>
 </html>

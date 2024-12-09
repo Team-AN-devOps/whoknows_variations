@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'          # Sinatra framework
+gem 'sinatra'         # Sinatra framework
 gem 'sqlite3'         # SQLite database
 gem 'sequel'          # ORM for easier database interactions
 gem 'rack'            # Rack is a modular Ruby web server interface
@@ -8,5 +8,11 @@ gem 'dotenv'          # For managing environment variables (optional but recomme
 gem 'json'            # For JSON handling
 gem 'rackup' 
 gem 'sinatra-flash'
-gem 'dotenv', require: 'dotenv/load'
+gem 'rack-cache'
+gem 'redis'
+gem 'redis-rack-cache'
+
+
+
+
 
