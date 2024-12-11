@@ -7,6 +7,7 @@ require 'redis'
 require 'redis-rack-cache'
 require 'httparty'
 
+#hej
 
 use Rack::Cache,
     verbose: true,
