@@ -7,8 +7,8 @@ require 'redis'
 require 'redis-rack-cache'
 require 'httparty'
 
-#hejjj
-hh
+
+
 
 
 use Rack::Cache,
