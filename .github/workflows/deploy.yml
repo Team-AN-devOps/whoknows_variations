@@ -22,16 +22,15 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
 
-      - name: Install dependencies
-        run: bundle install
-        working-directory: src/backend/ruby
-
       - name: Prepare SSH Key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DO_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 167.99.41.21 >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@167.99.41.21 "echo 'SSH connection successful'"
 
       - name: Deploy to DigitalOcean
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} "sudo systemctl restart sinatra-app.service"
+        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@167.99.41.21 "sudo systemctl restart sinatra-app.service"
