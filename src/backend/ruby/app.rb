@@ -29,13 +29,14 @@ set :session_secret, 'da3259994058f90b0b08ab4650096c506825cd0a38fe40666c0f751e9a
 
 
 configure :development do
+  set :bind, '0.0.0.0'  # Add this line to bind the app to all IP addresses
   set :port, 4568
 end
 
 configure :production do
+  set :bind, '0.0.0.0'  # Add this line to bind the app to all IP addresses
   set :port, 4567
 end
-
 
 # Set the database path to the existing database
 #set :database_path, '/tmp/whoknows.db'
