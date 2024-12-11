@@ -34,4 +34,4 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} "cd ~/whoknows_variations/src/backend/ruby && nohup ruby app.rb > app.log 2>&1 &"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} "sudo systemctl restart sinatra-app.service"
