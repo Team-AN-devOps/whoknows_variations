@@ -24,6 +24,16 @@ enable :sessions
 # Set the secret key for session management
 set :session_secret, 'da3259994058f90b0b08ab4650096c506825cd0a38fe40666c0f751e9ab21f5f'  # Replace with a strong, random string
 
+
+configure :development do
+  set :port, 4568
+end
+
+configure :production do
+  set :port, 4567
+end
+
+
 # Set the database path to the existing database
 #set :database_path, '/tmp/whoknows.db'
 set :database_path, '../whoknows.db'

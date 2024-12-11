@@ -4,11 +4,22 @@ GEM
     base64 (0.2.0)
     bigdecimal (3.1.8)
     connection_pool (2.4.1)
+    csv (3.3.0)
     dotenv (3.1.4)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     json (2.9.0)
     logger (1.6.2)
+    mini_mime (1.1.5)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
+    nio4r (2.7.4)
+    puma (6.5.0)
+      nio4r (~> 2.0)
     rack (3.1.8)
     rack-cache (1.17.0)
       rack (>= 0.4)
@@ -67,7 +78,9 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  httparty
   json
+  puma
   rack
   rack-cache
   rackup

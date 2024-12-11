@@ -11,6 +11,12 @@ gem 'sinatra-flash'
 gem 'rack-cache'
 gem 'redis'
 gem 'redis-rack-cache'
+gem 'httparty'
+gem 'puma'
+
+
+
+
 
 
 
