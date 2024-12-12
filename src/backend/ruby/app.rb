@@ -1,11 +1,12 @@
 require 'sinatra'
-require 'sqlite3'
 require 'digest'
 require 'sinatra/flash'
 require 'dotenv/load'  
 require 'redis'
 require 'redis-rack-cache'
 require 'httparty'
+require 'pg' # PostgreSQL library
+
 
 
 use Rack::Cache,
@@ -24,30 +25,23 @@ enable :sessions
 # Set the secret key for session management
 set :session_secret, 'da3259994058f90b0b08ab4650096c506825cd0a38fe40666c0f751e9ab21f5f'  # Replace with a strong, random string
 
+set :server, 'puma'
+
 # Set the database path to the existing database
 #set :database_path, '/tmp/whoknows.db'
-set :database_path, '../whoknows.db'
+#set :database_path, '../whoknows.db'
+
 
 # Connect to the database
+# Connect to the PostgreSQL database
 def connect_db
-  db = SQLite3::Database.new(settings.database_path)
-  db.results_as_hash = true
-  db
+  @db ||= PG.connect(ENV['DATABASE_URL'])
 end
+
 
 # Load environment variables
 Dotenv.load('.env')
 
-# Check if the database exists
-def check_db_exists
-  unless File.exist?(settings.database_path)
-    puts "Database not found"
-    exit(1)
-  end
-end
-
-# Call the check before you connect
-check_db_exists
 
 # Password hashing function
 def hash_password(password)
@@ -71,39 +65,20 @@ end
 
 # Page routes
 # Home route (search page)
-get '/' do
+def search
+  """Shows the search page."""
   q = params[:q]
-  language = params[:language] || "en"
-  db = connect_db
-
-  puts "Searching for: #{q} in language: #{language}"
-
-  search_results = []
-  message = nil
+  language = params[:language] || "en" # Default language to "en" if not provided
 
   if q.nil? || q.empty?
-    message = "Please enter a search query."
+    search_results = [] # Return an empty array if no search query is provided
   else
-    begin
-      search_results = db.execute(
-        "SELECT * FROM pages WHERE language = ? AND content LIKE ?",
-        language,
-        "%#{q}%"
-      )
-    rescue SQLite3::Exception => e
-      puts "SQLite error: #{e.message}"
-    end
-
-    if search_results.empty?
-      message = "Ingen resultater fundet for '#{q}'"
-    end
+    # Ensure you're using the correct parameterized query to prevent SQL injection
+    query = "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
+    search_results = db.execute(query, [language, "%#{q}%"])
   end
 
-  erb :search, locals: { search_results: search_results, query: q, message: message, user: current_user }
-end
-
-get '/weather' do
-  erb :weather, locals: { user: current_user }
+  erb :search, locals: { search_results: search_results, query: q }
 end
 
 
