@@ -1,10 +1,7 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -22,10 +19,6 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
 
-      - name: Install dependencies
-        run: bundle install
-        working-directory: src/backend/ruby
-
       - name: Prepare SSH Key
         run: |
           mkdir -p ~/.ssh
@@ -34,4 +27,9 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} "cd ~/whoknows_variations/src/backend/ruby && nohup ruby app.rb > app.log 2>&1 &"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} <<EOF
+          cd ~/whoknows_variations/src/backend/ruby
+          git pull origin main
+          bundle install
+          sudo systemctl restart sinatra-app.service
+          EOF
