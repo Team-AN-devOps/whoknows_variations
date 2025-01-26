@@ -6,6 +6,7 @@ require 'redis'
 require 'redis-rack-cache'
 require 'httparty'
 require 'pg' # PostgreSQL library
+require 'sinatra/contrib'
 
 
 
@@ -73,23 +74,53 @@ helpers do
   end
 end
 
+get '/db_test' do
+  begin
+    db = connect_db
+    result = db.exec("SELECT version();") # Check PostgreSQL version
+    "Connected to PostgreSQL: #{result[0]['version']}"
+  rescue PG::Error => e
+    "Database connection failed: #{e.message}"
+  end
+end
+
 # Page routes
 # Home route (search page)
-def search
-  """Shows the search page."""
-  q = params[:q]
-  language = params[:language] || "en" # Default language to "en" if not provided
+# Route for search page
+get '/' do
+  query = params['q'] # Search query from the form input
+  language = params['language'] || 'en' # Default to English if no language specified
 
-  if q.nil? || q.empty?
-    search_results = [] # Return an empty array if no search query is provided
-  else
-    # Ensure you're using the correct parameterized query to prevent SQL injection
-    query = "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
-    search_results = db.execute(query, [language, "%#{q}%"])
+  search_results = []
+  @error = nil
+
+  if query && !query.strip.empty?
+    begin
+      db = connect_db
+      search_results = db.exec_params(
+        "SELECT * FROM pages WHERE language = $1 AND content ILIKE $2",
+        [language, "%#{query}%"]
+      ).to_a
+    rescue PG::Error => e
+      @error = "Database error: #{e.message}"
+    end
   end
 
-  erb :search, locals: { search_results: search_results, query: q }
+  erb :search, locals: { search_results: search_results, query: query }
 end
+
+#Check the Search Results
+begin
+  db = connect_db
+  search_results = db.exec_params(
+    "SELECT * FROM pages WHERE language = $1 AND content ILIKE $2",
+    [language, "%#{query}%"]
+  ).to_a
+  puts "Search results: #{search_results}"  # Debug log
+rescue PG::Error => e
+  @error = "Database error: #{e.message}"
+end
+
 
 
 # About route
@@ -121,20 +152,21 @@ end
 
 # API endpoint for search
 get '/api/search' do
-  content_type :json  # Set the response content type to JSON
-  q = params[:q]
-  language = params[:language] || "en"
+  content_type :json
+  query = params['q']
+  language = params['language'] || 'en'
 
   db = connect_db
 
-  if q.nil? || q.empty?
-    search_results = []
+  if query.nil? || query.strip.empty?
+    { search_results: [] }.to_json
   else
-    # Use parameterized queries to prevent SQL injection
-    search_results = db.execute("SELECT * FROM pages WHERE language = ? AND content LIKE ?", language, "%#{q}%")
+    search_results = db.exec_params(
+      "SELECT * FROM pages WHERE language = $1 AND content ILIKE $2",
+      [language, "%#{query}%"]
+    ).to_a
+    { search_results: search_results }.to_json
   end
-
-  { search_results: search_results }.to_json  # Convert the results to JSON
 end
 
 # API login route
@@ -194,8 +226,18 @@ get '/api/logout' do
   { message: 'You were logged out' }.to_json
 end
 
+get '/db_name' do
+  begin
+    db = connect_db
+    result = db.exec("SELECT current_database();") # Query to get the current database name
+    "Connected to database: #{result[0]['current_database']}"
+  rescue PG::Error => e
+    "Database connection failed: #{e.message}"
+  end
+end
 
-get 'api/weather' do
+
+get '/api/weather' do
   content_type :json
   lat = params[:lat]
   lon = params[:lon]

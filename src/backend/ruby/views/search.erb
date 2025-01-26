@@ -1,56 +1,20 @@
-<!-- views/search.erb -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Page</title>
-    <link rel="stylesheet" type="text/css" href="/style.css" />
-</head>
-<body>
-    <div>
-        <input
-            id="search-input"
-            placeholder="Search..."
-            value="<%= params[:q] || '' %>"  <!-- Use ERB to access the search query -->
-        />
-        <button onclick="makeSearchRequest()">Search</button>
-    </div>
+<h1>Search Results</h1>
+<form method="get" action="/">
+  <input type="text" name="q" value="<%= query || '' %>" placeholder="Search..." />
+  <button type="submit">Search</button>
+</form>
 
-    <div id="results">
-        <% search_results.each do |result| %>  <!-- Use ERB for loop -->
-            <div>
-                <h2>
-                    <a class="search-result-title" href="<%= result['url'] %>"><%= result['title'] %></a>
-                </h2>
-                <p class="search-result-title"><%= result['title'] %></p>
-            </div>
-        <% end %>
-    </div>
-
-    <script>
-        let searchInput;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            searchInput = document.getElementById('search-input');
-
-            // Focus the input field
-            searchInput.focus();
-
-            // Search when the user presses Enter
-            searchInput.addEventListener('keypress', (event) => {
-                if (event.key === 'Enter') {
-                    makeSearchRequest();
-                }
-            });
-        });
-
-        function makeSearchRequest() {
-            const query = searchInput.value;
-            const url = new URL(window.location.href);
-            url.searchParams.set('q', query);
-            window.location.href = url.toString();
-        }
-    </script>
-</body>
-</html>
+<% if @error %>
+  <p>Error: <%= @error %></p>
+<% elsif search_results.empty? %>
+  <p>No results found for "<%= query %>".</p>
+<% else %>
+  <ul>
+    <% search_results.each do |result| %>
+      <li>
+        <a href="<%= result['url'] %>"><%= result['title'] %></a>
+        <p><%= result['content'] %></p>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

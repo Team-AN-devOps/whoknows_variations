@@ -16,6 +16,7 @@ gem 'pg'       # PostgreSQL driver for Ruby
 gem 'activerecord'  # ORM for database interaction
 gem 'sinatra-activerecord'  # Sinatra extension for ActiveRecord
 gem 'puma'
+gem 'sinatra-contrib'
 
 
 
