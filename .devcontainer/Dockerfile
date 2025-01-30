@@ -5,7 +5,7 @@ FROM ruby:3.2
 WORKDIR /app
 
 # Copy Gemfile and Gemfile.lock from src/ruby
-COPY src/backend/ruby/Gemfile src/backend/ruby/Gemfile.lock ./
+COPY ../src/backend/ruby /app
 RUN apt-get update -qq && apt-get install -y libpq-dev && bundle install
 
 # Copy the rest of the application
