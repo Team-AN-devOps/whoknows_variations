@@ -8,7 +8,6 @@ gem 'dotenv'          # For managing environment variables (optional but recomme
 gem 'json'            # For JSON handling
 gem 'rackup' 
 gem 'sinatra-flash'
-gem 'rack-cache'
 gem 'redis'
 gem 'redis-rack-cache'
 gem 'httparty'
@@ -17,6 +16,7 @@ gem 'activerecord'  # ORM for database interaction
 gem 'sinatra-activerecord'  # Sinatra extension for ActiveRecord
 gem 'puma'
 gem 'sinatra-contrib'
+gem 'rack-cache'
 
 
 
