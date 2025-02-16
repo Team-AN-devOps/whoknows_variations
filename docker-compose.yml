@@ -2,21 +2,44 @@ services:
   app:
     build:
       context: .
+      dockerfile: .devcontainer/Dockerfile
     volumes:
       - ./src/backend/ruby:/app
     ports:
       - "4567:4567"
-    depends_on:
-      - db
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL=${DATABASE_URL}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+    networks:
+      - mynetwork
     command: bundle exec ruby app.rb
+    depends_on:
+      - postgres  # Ensures that app waits for postgres to be up
+      - redis
 
-  db:
-    image: postgres:15
+  postgres:
+    image: postgres:latest
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - whoknows_variations_postgres_data:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql  # Mount the schema file
+    networks:
+      - mynetwork
     ports:
-      - "5432:5432"
+      - "5432:5432"  
+
+  redis:
+    image: redis:latest
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  whoknows_variations_postgres_data:
+    external: true

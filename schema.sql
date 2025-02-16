@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL
@@ -37,8 +37,8 @@ VALUES
 ('The Great Gatsby', 'https://www.goodreads.com/book/show/4671.The_Great_Gatsby', 'en', 
  '2024-11-07 20:45:00', 'A tragic story of wealth, ambition, and unrequited love in 1920s America.'),
 ('1984', 'https://www.goodreads.com/book/show/5470.1984', 'en', 
- '2024-11-08 22:00:00', 'A dystopian novel that explores the dangers of totalitarianism and extreme surveillance.');
- ('The Catcher in the Rye', 'https://www.goodreads.com/book/show/5107.The_Catcher_in_the_Rye', 'en', 
+ '2024-11-08 22:00:00', 'A dystopian novel that explores the dangers of totalitarianism and extreme surveillance.'),
+('The Catcher in the Rye', 'https://www.goodreads.com/book/show/5107.The_Catcher_in_the_Rye', 'en', 
  '2024-12-01 09:00:00', 'A story about teenage rebellion and the search for identity.'),
 ('Brave New World', 'https://www.goodreads.com/book/show/5129.Brave_New_World', 'en', 
  '2024-12-02 10:15:00', 'A dystopian novel depicting a technologically advanced but emotionally shallow society.'),
@@ -53,7 +53,7 @@ VALUES
 ('The Road', 'https://www.goodreads.com/book/show/6288.The_Road', 'en', 
  '2024-12-07 16:30:00', 'A post-apocalyptic journey of a father and son struggling to survive.'),
 ('War and Peace', 'https://www.goodreads.com/book/show/656.War_and_Peace', 'en', 
- '2024-12-08 17:45:00', 'An epic novel exploring love, family, and politics during the Napoleonic Wars.');
+ '2024-12-08 17:45:00', 'An epic novel exploring love, family, and politics during the Napoleonic Wars.'),
 ('The Book Thief', 'https://www.goodreads.com/book/show/19063.The_Book_Thief', 'en', 
  '2024-12-09 10:00:00', 'A moving story set in Nazi Germany, narrated by Death, about a girl who finds solace in stealing books.'),
 ('Wuthering Heights', 'https://www.goodreads.com/book/show/6185.Wuthering_Heights', 'en', 
@@ -63,8 +63,8 @@ VALUES
 ('Frankenstein', 'https://www.goodreads.com/book/show/18490.Frankenstein', 'en', 
  '2024-12-12 13:45:00', 'A gothic novel about the creation of a monster and its tragic consequences.'),
 ('Les Misérables', 'https://www.goodreads.com/book/show/24280.Les_Mis_rables', 'en', 
- '2024-12-13 14:00:00', 'An epic story of redemption, justice, and love set in revolutionary France.');
- ('The Hobbit', 'https://www.goodreads.com/book/show/5907.The_Hobbit', 'en', 
+ '2024-12-13 14:00:00', 'An epic story of redemption, justice, and love set in revolutionary France.'),
+('The Hobbit', 'https://www.goodreads.com/book/show/5907.The_Hobbit', 'en', 
  '2024-12-10 09:00:00', 'A fantastical adventure of a hobbit’s journey to recover a treasure guarded by a dragon.'),
 ('The Divine Comedy', 'https://www.goodreads.com/book/show/172418.The_Divine_Comedy', 'en', 
  '2024-12-11 10:30:00', 'A classic Italian poem exploring the realms of Hell, Purgatory, and Heaven.'),
@@ -93,44 +93,13 @@ VALUES
 ('The Stranger', 'https://www.goodreads.com/book/show/49552.The_Stranger', 'en', 
  '2024-12-23 12:00:00', 'An existential novel about a man’s indifferent attitude toward life and society.'),
 ('The Wind-Up Bird Chronicle', 'https://www.goodreads.com/book/show/11275.The_Wind_Up_Bird_Chronicle', 'en', 
- '2024-12-24 13:00:00', 'A surreal exploration of loss, war, and the mysteries of life in modern Japan.');
- ('A Tale of Two Cities', 'https://www.goodreads.com/book/show/1953.A_Tale_of_Two_Cities', 'en', 
+ '2024-12-24 13:00:00', 'A surreal exploration of loss, war, and the mysteries of life in modern Japan.'),
+('A Tale of Two Cities', 'https://www.goodreads.com/book/show/1953.A_Tale_of_Two_Cities', 'en', 
  '2024-12-10 10:00:00', 'A historical novel set during the French Revolution, exploring themes of love and sacrifice.'),
 ('Beloved', 'https://www.goodreads.com/book/show/6149.Beloved', 'en', 
  '2024-12-11 11:30:00', 'A haunting tale of slavery, memory, and motherhood in post-Civil War America.'),
 ('Catch-22', 'https://www.goodreads.com/book/show/168668.Catch_22', 'en', 
  '2024-12-12 12:15:00', 'A satirical novel about the absurdities of war and bureaucracy during WWII.'),
 ('One Hundred Years of Solitude', 'https://www.goodreads.com/book/show/320.One_Hundred_Years_of_Solitude', 'en', 
- '2024-12-13 13:45:00', 'A magical realism masterpiece chronicling the Buendía family over generations.'),
-('The Bell Jar', 'https://www.goodreads.com/book/show/6514.The_Bell_Jar', 'en', 
- '2024-12-14 14:30:00', 'A semi-autobiographical novel about mental illness and societal expectations in the 1950s.'),
-('Slaughterhouse-Five', 'https://www.goodreads.com/book/show/4981.Slaughterhouse_Five', 'en', 
- '2024-12-15 15:00:00', 'A darkly comedic anti-war novel about time travel and the bombing of Dresden.'),
-('The Grapes of Wrath', 'https://www.goodreads.com/book/show/18114322-the-grapes-of-wrath', 'en', 
- '2024-12-16 16:30:00', 'A powerful story of the Dust Bowl migration and the struggles of farm families.'),
-('The Kite Runner', 'https://www.goodreads.com/book/show/77203.The_Kite_Runner', 'en', 
- '2024-12-17 17:00:00', 'A moving tale of friendship, betrayal, and redemption in Afghanistan.'),
-('Life of Pi', 'https://www.goodreads.com/book/show/4214.Life_of_Pi', 'en', 
- '2024-12-18 18:15:00', 'An adventurous and philosophical story of survival, belief, and a tiger named Richard Parker.'),
-('The Secret Garden', 'https://www.goodreads.com/book/show/2998.The_Secret_Garden', 'en', 
- '2024-12-19 19:30:00', 'A heartwarming tale of transformation and renewal through nature.');
-('The Sun Also Rises', 'https://www.goodreads.com/book/show/3876.The_Sun_Also_Rises', 'en', 
- '2024-12-20 10:00:00', 'A novel of the lost generation, exploring disillusionment and resilience after WWI.'),
-('Middlemarch', 'https://www.goodreads.com/book/show/19089.Middlemarch', 'en', 
- '2024-12-21 11:15:00', 'A complex story of love, ambition, and societal change in 19th-century England.'),
-('The Sound and the Fury', 'https://www.goodreads.com/book/show/11014.The_Sound_and_the_Fury', 'en', 
- '2024-12-22 12:30:00', 'A Southern Gothic masterpiece exploring family, memory, and tragedy.'),
-('The Old Man and the Sea', 'https://www.goodreads.com/book/show/2165.The_Old_Man_and_the_Sea', 'en', 
- '2024-12-23 13:45:00', 'A short but profound tale of struggle, pride, and endurance.'),
-('Their Eyes Were Watching God', 'https://www.goodreads.com/book/show/37415.Their_Eyes_Were_Watching_God', 'en', 
- '2024-12-24 14:00:00', 'A story of a woman’s journey toward independence and self-realization in the American South.'),
-('The Trial', 'https://www.goodreads.com/book/show/17690.The_Trial', 'en', 
- '2024-12-25 15:15:00', 'A surreal and Kafkaesque tale of a man accused of a mysterious crime.'),
-('Things Fall Apart', 'https://www.goodreads.com/book/show/37781.Things_Fall_Apart', 'en', 
- '2024-12-26 16:30:00', 'A powerful story about colonialism and cultural clashes in Nigeria.'),
-('The Catcher in the Rye', 'https://www.goodreads.com/book/show/5107.The_Catcher_in_the_Rye', 'en', 
- '2024-12-27 17:00:00', 'A story about teenage rebellion and the search for identity.'),
-('The Scarlet Letter', 'https://www.goodreads.com/book/show/12296.The_Scarlet_Letter', 'en', 
- '2024-12-28 18:15:00', 'A tale of sin, guilt, and redemption in Puritan New England.'),
-('The Jungle', 'https://www.goodreads.com/book/show/41681.The_Jungle', 'en', 
- '2024-12-29 19:30:00', 'A stark depiction of immigrant life and labor exploitation in the meatpacking industry.');
+ '2024-12-13 13:45:00', 'A magical realism masterpiece chronicling the rise and fall of the Buendía family in Colombia.')
+;

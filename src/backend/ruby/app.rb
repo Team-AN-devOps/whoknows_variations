@@ -41,6 +41,10 @@ get '/' do
   erb :search, locals: { search_results: search_results, query: query }
 end
 
+get '/weather' do
+  erb :weather, locals: { user: current_user }
+end
+
 # About route
 get '/about' do
   erb :about, locals: { user: current_user }
