@@ -1,6 +1,6 @@
 require 'httparty'
 
-# API endpoint for weather data
+# API endpoint for weather dat
 get '/api/weather' do
   content_type :json
   lat = params[:lat]
