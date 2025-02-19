@@ -6,7 +6,7 @@ services:
     volumes:
       - ./src/backend/ruby:/app
     ports:
-      - "4567:4567"
+      - '4567:4567'
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
@@ -14,8 +14,9 @@ services:
       - mynetwork
     command: bundle exec ruby app.rb
     depends_on:
-      - postgres  # Ensures that app waits for postgres to be up
+      - postgres
       - redis
+      - prometheus # Ensure that Prometheus is available for Grafana and app monitoring
 
   postgres:
     image: postgres:latest
@@ -25,21 +26,12 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - whoknows_variations_postgres_data:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql  # Mount the schema file
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - mynetwork
     ports:
-      - "5432:5432"  
+      - '5432:5432'
 
-  redis:
-    image: redis:latest
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
-
-volumes:
-  whoknows_variations_postgres_data:
-    external: true
+  postgres_exporter:
+    image: wrouesnel/postgres_exporter:latest
+    co
