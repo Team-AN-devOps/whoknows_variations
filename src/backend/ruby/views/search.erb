@@ -1,0 +1,20 @@
+<h1>Search Results</h1>
+<form method="get" action="/">
+  <input type="text" name="q" value="<%= query || '' %>" placeholder="Search..." />
+  <button type="submit">Search</button>
+</form>
+
+<% if @error %>
+  <p>Error: <%= @error %></p>
+<% elsif search_results.empty? %>
+  <p>No results found for "<%= query %>".</p>
+<% else %>
+  <ul>
+    <% search_results.each do |result| %>
+      <li>
+        <a href="<%= result['url'] %>"><%= result['title'] %></a>
+        <p><%= result['content'] %></p>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">  <!-- Specifying language for better accessibility -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Who Knows?</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+<body>
+<div class="page">
+    <div class="navigation">
+        <nav>
+            <h1><a id="nav-logo" href="/">¿Who Knows?</a></h1>
+            <a id="nav-weather" href="/weather">Weather</a> <!-- Weather Button -->
+        </nav>
+    </div>
+
+    <% if flash[:error] || flash[:success] %>  <!-- Example for flashes in Sinatra -->
+        <ul class="flashes">
+            <% if flash[:error] %>
+                <li><%= flash[:error] %></li>
+            <% end %>
+            <% if flash[:success] %>
+                <li><%= flash[:success] %></li>
+            <% end %>
+        </ul>
+    <% end %>
+
+    <div class="body">
+        <%= yield %>  <!-- This is where the view content will be injected -->
+    </div>
+    
+    <div class="footer">
+        <span>¿Who Knows? &copy; 2009</span>
+        <a href="/about">About</a>
+    </div>
+</div>
+</body>
+</html>

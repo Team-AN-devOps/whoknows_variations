@@ -1,0 +1,23 @@
+digraph {
+	blinker [label="blinker\n1.8.2"]
+	click [label="click\n8.1.7"]
+	flask -> blinker [label=">=1.6.2"]
+	flask -> click [label=">=8.1.3"]
+	flask -> itsdangerous [label=">=2.1.2"]
+	flask -> jinja2 [label=">=3.1.2"]
+	flask -> werkzeug [label=">=3.0.0"]
+	flask [label="Flask\n3.0.3"]
+	graphviz [label="graphviz\n0.20.3"]
+	itsdangerous [label="itsdangerous\n2.2.0"]
+	jinja2 -> markupsafe [label=">=2.0"]
+	jinja2 [label="Jinja2\n3.1.4"]
+	markupsafe [label="MarkupSafe\n3.0.2"]
+	packaging [label="packaging\n24.2"]
+	pip [label="pip\n24.2"]
+	pipdeptree -> packaging [label=">=24.1"]
+	pipdeptree -> pip [label=">=24.2"]
+	pipdeptree [label="pipdeptree\n2.24.0"]
+	werkzeug -> markupsafe [label=">=2.1.1"]
+	werkzeug [label="Werkzeug\n3.0.4"]
+}
+
