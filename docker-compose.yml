@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ./src/backend/ruby:/app
+      - ./src:/app
     ports:
       - "4567:4567"
     environment:

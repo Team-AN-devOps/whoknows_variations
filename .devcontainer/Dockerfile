@@ -5,11 +5,11 @@ FROM ruby:3.2
 WORKDIR /app
 
 # Copy Gemfile and Gemfile.lock from src/ruby
-COPY ../src/backend/ruby /app
+COPY ../src /app
 RUN apt-get update -qq && apt-get install -y libpq-dev && bundle install
 
 # Copy the rest of the application
-COPY src/backend/ruby /app
+COPY src /app
 
 # Expose Sinatra's default port
 EXPOSE 4567
