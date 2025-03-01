@@ -51,4 +51,34 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     environment:
-      GF_SECURITY_
+      GF_SECURITY_ADMIN_PASSWORD: 'admin' # Set Grafana admin password (you can change this)
+    volumes:
+      - grafana_data:/var/lib/grafana # Persist Grafana data
+    ports:
+      - '3000:3000'
+    networks:
+      - mynetwork
+    depends_on:
+      - prometheus
+
+  postgres_exporter:
+    image: wrouesnel/postgres_exporter:latest
+    container_name: postgres_exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    ports:
+      - '9187:9187' # Expose the metrics port
+    networks:
+      - mynetwork
+    depends_on:
+      - postgres
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  whoknows_variations_postgres_data:
+    external: true
+  grafana_data:
+    external: true

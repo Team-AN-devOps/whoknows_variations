@@ -17,4 +17,11 @@ gem 'sinatra-activerecord'  # Sinatra extension for ActiveRecord
 gem 'puma'
 gem 'sinatra-contrib'
 gem 'rack-cache'
-gem 'pr
+gem 'prometheus-client'
+
+
+
+
+
+
+
