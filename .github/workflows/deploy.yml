@@ -13,11 +13,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          ruby-version: 3.2
-          bundler-cache: true
+          path: ~/.cache/docker
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }} .
+
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
 
       - name: Prepare SSH Key
         run: |
@@ -29,7 +45,9 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} <<EOF
           cd ~/whoknows_variations/src/backend/ruby
-          git pull origin main
-          bundle install
-          sudo systemctl restart sinatra-app.service
+          docker pull ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
+          docker stop sinatra-app || true
+          docker rm sinatra-app || true
+          docker run -d --name sinatra-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
           EOF
+
