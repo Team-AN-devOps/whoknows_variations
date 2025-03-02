@@ -44,7 +44,7 @@ jobs:
       - name: Deploy to DigitalOcean
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} <<EOF
-          cd ~/Eksamensoevelse1/whoknows_variations/src
+          cd ~/whoknows_variations/src
           docker pull ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
           docker stop sinatra-app || true
           docker rm sinatra-app || true

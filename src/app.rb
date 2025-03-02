@@ -86,4 +86,4 @@ end
 def search(query, language)
   db = connect_db
   db.exec_params("SELECT * FROM pages WHERE language = $1 AND content ILIKE $2", [language, "%#{query}%"]).to_a
-end
+e
