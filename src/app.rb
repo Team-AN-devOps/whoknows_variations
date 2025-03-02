@@ -9,6 +9,9 @@ require 'rack/cache'
 require 'prometheus/client'
 require 'prometheus/client/formats/text'
 
+
+
+
 # Disable protection globally for the entire app
 disable :protection
 

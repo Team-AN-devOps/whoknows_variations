@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ./src:/app
+      - ./src:/app/src
     ports:
       - '4567:4567'
     environment:
