@@ -43,24 +43,10 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -T root@${{ secrets.DO_DROPLET_IP }} <<EOF
-          # Ensure the app is healthy before stopping the old container
-          curl -s http://localhost:80/health || exit 1
-          
-          # Pull the new Docker image
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} <<EOF
+          cd ~/whoknows_variations/src
           docker pull ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
-          
-          # Gracefully stop the old container
           docker stop sinatra-app || true
-          docker wait sinatra-app || true
           docker rm sinatra-app || true
-
-          # Run the new container
           docker run -d --name sinatra-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/whoknows_variations-app:${{ github.sha }}
-          
-          # Health check again after starting the new container
-          while ! curl -s http://localhost:80/health; do
-              echo "Waiting for the new app to be healthy..."
-              sleep 5
-          done
           EOF
