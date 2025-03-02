@@ -43,7 +43,7 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DO_DROPLET_IP }} <<EOF
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -T root@${{ secrets.DO_DROPLET_IP }} <<EOF
           # Ensure the app is healthy before stopping the old container
           curl -s http://localhost:80/health || exit 1
           
