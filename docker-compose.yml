@@ -81,4 +81,4 @@ volumes:
   whoknows_variations_postgres_data:
     external: true
   grafana_data:
-    external: true
+    external: t
